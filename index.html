@@ -46,10 +46,10 @@
                         pixelArray.push(parseFloat(r), parseFloat(g), parseFloat(b), parseFloat(a));
                     }
 
-                    const resultString = JSON.stringify(pixelArray);
-                    console.log('Pixels converted:', resultString);
+                    console.log('Pixels converted.');
 
-                    document.getElementById('resultMessage').innerText = 'Conversion complete. Result: ' + resultString;
+                    // Commented out the display of result message
+                    // document.getElementById('resultMessage').innerText = 'Conversion complete. Result: ' + JSON.stringify(pixelArray);
                 };
             };
 
