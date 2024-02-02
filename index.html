@@ -40,10 +40,10 @@
                     const pixelArray = [];
 
                     for (let i = 0; i < imageData.length; i += 4) {
-                        const r = imageData[i] / 255;
-                        const g = imageData[i + 1] / 255;
-                        const b = imageData[i + 2] / 255;
-                        const a = imageData[i + 3] / 255;
+                        const r = (imageData[i] / 255).toFixed(6);
+                        const g = (imageData[i + 1] / 255).toFixed(6);
+                        const b = (imageData[i + 2] / 255).toFixed(6);
+                        const a = (imageData[i + 3] / 255).toFixed(6);
 
                         pixelArray.push(r, g, b, a);
                     }
