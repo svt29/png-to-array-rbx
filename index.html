@@ -3,41 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image to 1D Array Converter</title>
-    <style>
-        #output {
-            white-space: pre-wrap;
-        }
-    </style>
+    <title>Image Pixel Converter</title>
 </head>
 <body>
-    <input type="file" id="imageInput" accept="image/png">
-    <pre id="output"></pre>
 
-    <script>
-        document.getElementById('imageInput').addEventListener('change', handleImage);
+<input type="file" id="imageInput" accept="image/png" />
+<button onclick="convertPixels()">Convert Pixels</button>
+<button onclick="copyToClipboard()">Copy to Clipboard</button>
 
-        function handleImage(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+<div id="resultMessage"></div>
 
+<script>
+    let pixelArray = [];
+
+    function convertPixels() {
+        const input = document.getElementById('imageInput');
+        const file = input.files[0];
+
+        if (file) {
             const reader = new FileReader();
 
-            reader.onload = function (event) {
+            reader.onload = function (e) {
                 const img = new Image();
-                img.src = event.target.result;
+                img.src = e.target.result;
 
                 img.onload = function () {
                     const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-
+                    const context = canvas.getContext('2d');
                     canvas.width = img.width;
                     canvas.height = img.height;
-                    ctx.drawImage(img, 0, 0);
+                    context.drawImage(img, 0, 0, img.width, img.height);
 
-                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-
-                    const pixelArray = [];
+                    const imageData = context.getImageData(0, 0, img.width, img.height).data;
+                    pixelArray = [];
 
                     for (let i = 0; i < imageData.length; i += 4) {
                         const r = (imageData[i] / 255).toFixed(6);
@@ -45,15 +43,33 @@
                         const b = (imageData[i + 2] / 255).toFixed(6);
                         const a = (imageData[i + 3] / 255).toFixed(6);
 
-                        pixelArray.push(r, g, b, a);
+                        pixelArray.push(parseFloat(r), parseFloat(g), parseFloat(b), parseFloat(a));
                     }
 
-                    document.getElementById('output').textContent = '{' + pixelArray.join(', ') + '}';
+                    const resultString = JSON.stringify(pixelArray);
+                    console.log('Pixels converted:', resultString);
+
+                    document.getElementById('resultMessage').innerText = 'Conversion complete. Result: ' + resultString;
                 };
             };
 
             reader.readAsDataURL(file);
+        } else {
+            console.error('Please select a PNG file.');
         }
-    </script>
+    }
+
+    function copyToClipboard() {
+        const resultString = JSON.stringify(pixelArray);
+        const tempInput = document.createElement('input');
+        tempInput.value = resultString;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        console.log('Result copied to clipboard:', resultString);
+    }
+</script>
+
 </body>
 </html>
